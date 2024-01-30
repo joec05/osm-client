@@ -24,3 +24,4 @@ Size getTextSize(String text, TextStyle style) {
     ..layout(minWidth: 0, maxWidth: double.infinity);
   return textPainter.size;
 }
+

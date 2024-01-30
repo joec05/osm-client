@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart' as lat_long;
 
 class FloatingPolygonClass {
-  String text;
-  Size size;
   Color color;
-  lat_long.LatLng point;
+  Color borderColor;
+  List<lat_long.LatLng> points;
 
   FloatingPolygonClass(
-    this.text,
-    this.size,
+    this.borderColor,
     this.color,
-    this.point
+    this.points
   );
 }
 

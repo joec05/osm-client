@@ -3,9 +3,15 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' as lat_long;
 import 'package:osm_client/appdata/global_functions.dart';
+import 'package:osm_client/appdata/global_variables.dart';
+import 'package:osm_client/class/floating_circle_class.dart';
+import 'package:osm_client/class/floating_line_class.dart';
+import 'package:osm_client/class/floating_polygon_class.dart';
+import 'package:osm_client/class/floating_text_class.dart';
 import 'package:osm_client/class/global_data.dart';
 import 'package:osm_client/icons/coordinate_point.dart';
 import 'package:osm_client/widgets/bottom_navigator.dart';
+import 'package:osm_client/widgets/custom_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -103,8 +109,365 @@ class _MyHomePageState extends State<MyHomePage> {
     return await Geolocator.getCurrentPosition();
   }
 
-  
+  void editTextDialog(int index, FloatingTextNotifier data){
+    if(mounted){
+      TextEditingController textController = TextEditingController(
+        text: data.notifier.value.text
+      );
+      TextEditingController fontController = TextEditingController(
+        text: data.notifier.value.style.fontSize.toString()
+      );
+      double fontSize = data.notifier.value.style.fontSize!;
+      Color color = data.notifier.value.style.color!;
+      FontWeight boldValue = data.notifier.value.style.fontWeight!;
 
+      showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (context, setState){
+              return Dialog(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getScreenWidth() * 0.02
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: getScreenHeight() * 0.015
+                        ),
+                        const Text('Edit Text', style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700
+                        )),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            TextField(
+                              controller: textController,
+                              decoration: InputDecoration(
+                                counterText: "",
+                                contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                fillColor: Color.fromARGB(255, 143, 132, 132),
+                                filled: true,
+                                border: InputBorder.none,
+                                hintText: 'Enter text',
+                              )
+                            ),
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            Text('Select text font value', style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w500
+                            )),
+                            TextField(
+                              controller: fontController,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                counterText: "",
+                                contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                fillColor: Color.fromARGB(255, 143, 132, 132),
+                                filled: true,
+                                border: InputBorder.none,
+                                hintText: 'Enter font size',
+                                prefixIcon: IconButton(
+                                  onPressed: (){
+                                    if(fontSize > 14){
+                                      fontSize -= 0.5;
+                                      fontController.text = fontSize.toString();
+                                    }
+                                  },
+                                  icon: Icon(Icons.remove)
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    if(fontSize < 23){
+                                      fontSize += 0.5;
+                                      fontController.text = fontSize.toString();
+                                    }
+                                  },
+                                  icon: Icon(Icons.add)
+                                )
+                              )
+                            ),
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            Text('Select text bold value', style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w500
+                            )),
+                            DropdownButton( 
+                              // Initial Value 
+                              value: boldValue, 
+                              // Down Arrow Icon 
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: List<DropdownMenuItem>.from(FontWeight.values.map((FontWeight items) { 
+                                return DropdownMenuItem<FontWeight>( 
+                                  value: items, 
+                                  child: Text(items.value.toString()), 
+                                ); 
+                              }).toList()),
+                              onChanged: (newValue) {  
+                                print(newValue);
+                                setState(() => boldValue = newValue); 
+                              }, 
+                            ), 
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            Text('Select text color', style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w500
+                            )),
+                            SizedBox(
+                              height: getScreenHeight() * 0.075,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: colorsList.length,
+                                itemBuilder: (context, index){
+                                  return Container(
+                                    padding: EdgeInsets.only(
+                                      right: getScreenWidth() * 0.015
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        setState(() => color = colorsList[index]);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: colorsList[index],
+                                          border: color == colorsList[index] ?
+                                            Border.all(
+                                              width: 2,
+                                              color: Color.fromARGB(255, 116, 108, 108)
+                                            )
+                                          : null
+                                        ),
+                                        width: getScreenWidth() * 0.1,
+                                        height: getScreenWidth() * 0.1
+                                      ),
+                                    )
+                                  );
+                                },
+                              )
+                            ),
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                          ],
+                        ),
+                        CustomButton(
+                          width: getScreenWidth() * 0.6, 
+                          height: getScreenHeight() * 0.07, 
+                          buttonColor: Colors.orange, 
+                          buttonText: 'Edit Text', 
+                          onTapped: (){
+                            if(textController.text.trim().isNotEmpty){
+                              List<FloatingTextNotifier> texts = [...globalData.texts.value];
+                              texts[index].notifier.value.text = textController.text;
+                              texts[index].notifier.value.style = TextStyle(
+                                fontSize: fontSize,
+                                color: color,
+                                fontWeight: boldValue
+                              );
+                              globalData.texts.value = [...texts];
+                              Navigator.of(dialogContext).pop();
+                            }else{
+                              showSnackBar(context, 'Text cannot be empty');
+                            }
+                          }, 
+                          setBorderRadius: true
+                        ),
+                        SizedBox(
+                          height: getScreenHeight() * 0.015
+                        ),
+                      ]
+                    ),
+                  ),
+                )
+              );
+            }
+          );
+        }
+      );
+    }
+  }
+
+  void editCircleDialog(int index, FloatingCircleNotifier data){
+    if(mounted){
+      TextEditingController radiusController = TextEditingController(
+        text: data.notifier.value.radius.toString()
+      );
+      Color fillColor = data.notifier.value.color;
+      Color borderColor = data.notifier.value.borderColor;
+      showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (context, setState){
+              return Dialog(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getScreenWidth() * 0.02
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: getScreenHeight() * 0.015
+                        ),
+                        const Text('Edit Circle', style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700
+                        )),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            TextField(
+                              controller: radiusController,
+                              keyboardType: TextInputType.numberWithOptions(),
+                              decoration: InputDecoration(
+                                counterText: "",
+                                contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                fillColor: Color.fromARGB(255, 143, 132, 132),
+                                filled: true,
+                                border: InputBorder.none,
+                                hintText: 'Enter radius',
+                              )
+                            ),
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            Text('Select circle color', style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w500
+                            )),
+                            SizedBox(
+                              height: getScreenHeight() * 0.075,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: colorsList.length,
+                                itemBuilder: (context, index){
+                                  return Container(
+                                    padding: EdgeInsets.only(
+                                      right: getScreenWidth() * 0.015
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        setState(() => fillColor = colorsList[index]);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: colorsList[index],
+                                          border: fillColor == colorsList[index] ?
+                                            Border.all(
+                                              width: 2,
+                                              color: Color.fromARGB(255, 116, 108, 108)
+                                            )
+                                          : null
+                                        ),
+                                        width: getScreenWidth() * 0.1,
+                                        height: getScreenWidth() * 0.1
+                                      ),
+                                    )
+                                  );
+                                },
+                              )
+                            ),
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                            Text('Select border color', style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w500
+                            )),
+                            SizedBox(
+                              height: getScreenHeight() * 0.075,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: colorsList.length,
+                                itemBuilder: (context, index){
+                                  return Container(
+                                    padding: EdgeInsets.only(
+                                      right: getScreenWidth() * 0.015
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        setState(() => borderColor = colorsList[index]);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: colorsList[index],
+                                          border: borderColor == colorsList[index] ?
+                                            Border.all(
+                                              width: 2,
+                                              color: Color.fromARGB(255, 116, 108, 108)
+                                            )
+                                          : null
+                                        ),
+                                        width: getScreenWidth() * 0.1,
+                                        height: getScreenWidth() * 0.1
+                                      ),
+                                    )
+                                  );
+                                },
+                              )
+                            ),
+                            SizedBox(
+                              height: getScreenHeight() * 0.02
+                            ),
+                          ]
+                        ),
+                        CustomButton(
+                          width: getScreenWidth() * 0.6, 
+                          height: getScreenHeight() * 0.07, 
+                          buttonColor: Colors.orange, 
+                          buttonText: 'Edit Circle', 
+                          onTapped: (){
+                            if(double.tryParse(radiusController.text) != null){
+                              List<FloatingCircleNotifier> circles = [...globalData.circles.value];
+                              circles[index].notifier.value.radius = double.parse(radiusController.text);
+                              circles[index].notifier.value.color = fillColor;
+                              circles[index].notifier.value.borderColor = borderColor;
+                              Navigator.of(dialogContext).pop();
+                            }else{
+                              showSnackBar(context, 'Invalid value');
+                            }
+                          }, 
+                          setBorderRadius: true
+                        ),
+                        SizedBox(
+                          height: getScreenHeight() * 0.015
+                        ),
+                      ]
+                    )
+                  )
+                )
+              );
+            }
+          );
+        }
+      );
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     print(globalData.latitude);
@@ -120,7 +483,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 initialCenter: const lat_long.LatLng(0, 0),
                 initialZoom: globalData.mapZoom,
                 onTap: (position, latLng){
-                  print(position);
+                  print(position.global.dx);
+                  print(position.global.dy);
                   print(latLng.latitude);
                   print(latLng.longitude);
                   setState((){
@@ -152,9 +516,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             textsList[i].notifier.value.text, 
                             textsList[i].notifier.value.style
                           ).height,
-                          child: Text(
-                            textsList[i].notifier.value.text,
-                            style: textsList[i].notifier.value.style
+                          child: GestureDetector(
+                            onTap: () => editTextDialog(i, textsList[i]),
+                            child: Text(
+                              textsList[i].notifier.value.text,
+                              style: textsList[i].notifier.value.style
+                            ),
                           )
                         ),
                       ]
@@ -176,11 +543,44 @@ class _MyHomePageState extends State<MyHomePage> {
                           useRadiusInMeter: true,
                           color: circlesList[i].notifier.value.color,
                           borderColor: circlesList[i].notifier.value.borderColor,
-                          borderStrokeWidth: 2,
+                          borderStrokeWidth: 20,
                         )
                       ],
                     );
                   },
+                ),
+                ValueListenableBuilder(
+                  valueListenable: globalData.polygons,
+                  builder: (context, polygonsList, child){
+                    return PolygonLayer(
+                      polygonCulling: false,
+                      polygons: [
+                        for(int i = 0; i < polygonsList.length; i++)
+                        Polygon(
+                          points: polygonsList[i].notifier.value.points,
+                          color: polygonsList[i].notifier.value.color,
+                          borderStrokeWidth: 2,
+                          borderColor: polygonsList[i].notifier.value.borderColor,
+                          isFilled: true
+                        ),
+                      ],
+                    );
+                  }
+                ),
+                ValueListenableBuilder(
+                  valueListenable: globalData.lines,
+                  builder: (context, linesList, child){
+                    return PolylineLayer(
+                      polylines: [
+                        for(int i = 0; i < linesList.length; i++)
+                        Polyline(
+                          points: linesList[i].notifier.value.points,
+                          color: linesList[i].notifier.value.color,
+                          strokeWidth: 2,
+                        ),
+                      ],
+                    );
+                  }
                 ),
                 MarkerLayer(
                   markers: [
@@ -201,24 +601,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                /*
-                PolygonLayer(
-                  polygonCulling: false,
-                  polygons: [
-                    Polygon(
-                      points: [
-                        lat_long.LatLng(36.95, -9.5),
-                        lat_long.LatLng(42.25, -9.5),
-                        lat_long.LatLng(42.25, -6.2),
-                      ],
-                      color: Colors.red.withOpacity(0.5),
-                      borderStrokeWidth: 2,
-                      borderColor: Colors.blue,
-                      isFilled: true
-                    ),
-                  ],
-                )
-                */
               ],
             ),
             Positioned(
