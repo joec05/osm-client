@@ -10,7 +10,7 @@ class CoordinatePoint extends CustomPainter {
       // Path number 1
   
 
-      paint.color = Color.fromARGB(255, 56, 55, 52);
+      paint.color = const Color.fromARGB(255, 56, 55, 52);
       path = Path();
       path.lineTo(size.width * 1.43, size.height * 0.45);
       path.cubicTo(size.width * 1.43, size.height * 0.62, size.width * 0.96, size.height * 1.1, size.width * 0.96, size.height * 1.1);
@@ -25,7 +25,7 @@ class CoordinatePoint extends CustomPainter {
       // Path number 3
   
 
-      paint.color = Color.fromARGB(255, 56, 55, 52);
+      paint.color = const Color.fromARGB(255, 56, 55, 52);
       path = Path();
       path.lineTo(size.width * 1.43, size.height * 0.45);
       path.cubicTo(size.width * 1.43, size.height * 0.62, size.width * 0.96, size.height * 1.1, size.width * 0.96, size.height * 1.1);
@@ -39,7 +39,7 @@ class CoordinatePoint extends CustomPainter {
       // Path number 5
   
 
-      paint.color = Color(0xffE24F32);
+      paint.color = const Color(0xffE24F32);
       path = Path();
       path.lineTo(size.width * 0.79, size.height * 0.45);
       path.cubicTo(size.width * 0.79, size.height * 0.59, size.width * 0.85, size.height * 0.62, size.width * 1.04, size.height * 0.54);

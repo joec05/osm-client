@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               decoration: InputDecoration(
                                 counterText: "",
                                 contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                fillColor: Color.fromARGB(255, 143, 132, 132),
+                                fillColor: const Color.fromARGB(255, 143, 132, 132),
                                 filled: true,
                                 border: InputBorder.none,
                                 hintText: 'Enter text',
@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               height: getScreenHeight() * 0.02
                             ),
-                            Text('Select text font value', style: TextStyle(
+                            const Text('Select text font value', style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w500
                             )),
@@ -172,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               decoration: InputDecoration(
                                 counterText: "",
                                 contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                fillColor: Color.fromARGB(255, 143, 132, 132),
+                                fillColor: const Color.fromARGB(255, 143, 132, 132),
                                 filled: true,
                                 border: InputBorder.none,
                                 hintText: 'Enter font size',
@@ -183,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       fontController.text = fontSize.toString();
                                     }
                                   },
-                                  icon: Icon(Icons.remove)
+                                  icon: const Icon(Icons.remove)
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: (){
@@ -192,14 +192,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                       fontController.text = fontSize.toString();
                                     }
                                   },
-                                  icon: Icon(Icons.add)
+                                  icon: const Icon(Icons.add)
                                 )
                               )
                             ),
                             SizedBox(
                               height: getScreenHeight() * 0.02
                             ),
-                            Text('Select text bold value', style: TextStyle(
+                            const Text('Select text bold value', style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w500
                             )),
@@ -222,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               height: getScreenHeight() * 0.02
                             ),
-                            Text('Select text color', style: TextStyle(
+                            const Text('Select text color', style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w500
                             )),
@@ -248,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           border: color == colorsList[index] ?
                                             Border.all(
                                               width: 2,
-                                              color: Color.fromARGB(255, 116, 108, 108)
+                                              color: const Color.fromARGB(255, 116, 108, 108)
                                             )
                                           : null
                                         ),
@@ -340,11 +340,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             TextField(
                               controller: radiusController,
-                              keyboardType: TextInputType.numberWithOptions(),
+                              keyboardType: const TextInputType.numberWithOptions(),
                               decoration: InputDecoration(
                                 counterText: "",
                                 contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                fillColor: Color.fromARGB(255, 143, 132, 132),
+                                fillColor: const Color.fromARGB(255, 143, 132, 132),
                                 filled: true,
                                 border: InputBorder.none,
                                 hintText: 'Enter radius',
@@ -353,7 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               height: getScreenHeight() * 0.02
                             ),
-                            Text('Select circle color', style: TextStyle(
+                            const Text('Select circle color', style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w500
                             )),
@@ -379,7 +379,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           border: fillColor == colorsList[index] ?
                                             Border.all(
                                               width: 2,
-                                              color: Color.fromARGB(255, 116, 108, 108)
+                                              color: const Color.fromARGB(255, 116, 108, 108)
                                             )
                                           : null
                                         ),
@@ -394,7 +394,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               height: getScreenHeight() * 0.02
                             ),
-                            Text('Select border color', style: TextStyle(
+                            const Text('Select border color', style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w500
                             )),
@@ -420,7 +420,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           border: borderColor == colorsList[index] ?
                                             Border.all(
                                               width: 2,
-                                              color: Color.fromARGB(255, 116, 108, 108)
+                                              color: const Color.fromARGB(255, 116, 108, 108)
                                             )
                                           : null
                                         ),
@@ -520,12 +520,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Side ${i+1}', style: TextStyle(
+                                      Text('Side ${i+1}', style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500
                                       )),
                                       IconButton(
-                                        icon: Icon(Icons.clear),
+                                        icon: const Icon(Icons.clear),
                                         onPressed: (){
                                           setState((){
                                             latitudeControllers.removeAt(i);
@@ -537,11 +537,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   TextField(
                                     controller: latitudeControllers[i],
-                                    keyboardType: TextInputType.numberWithOptions(),
+                                    keyboardType: const TextInputType.numberWithOptions(),
                                     decoration: InputDecoration(
                                       counterText: "",
                                       contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      fillColor: const Color.fromARGB(255, 143, 132, 132),
                                       filled: true,
                                       border: InputBorder.none,
                                       hintText: 'Enter latitude',
@@ -552,11 +552,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   TextField(
                                     controller: longitudeControllers[i],
-                                    keyboardType: TextInputType.numberWithOptions(),
+                                    keyboardType: const TextInputType.numberWithOptions(),
                                     decoration: InputDecoration(
                                       counterText: "",
                                       contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      fillColor: const Color.fromARGB(255, 143, 132, 132),
                                       filled: true,
                                       border: InputBorder.none,
                                       hintText: 'Enter longitude',
@@ -588,7 +588,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Select polygon color', style: TextStyle(
+                              const Text('Select polygon color', style: TextStyle(
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w500
                               )),
@@ -614,7 +614,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             border: color == colorsList[index] ?
                                               Border.all(
                                                 width: 2,
-                                                color: Color.fromARGB(255, 116, 108, 108)
+                                                color: const Color.fromARGB(255, 116, 108, 108)
                                               )
                                             : null
                                           ),
@@ -629,7 +629,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               SizedBox(
                                 height: getScreenHeight() * 0.02
                               ),
-                              Text('Select polygon border color', style: TextStyle(
+                              const Text('Select polygon border color', style: TextStyle(
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w500
                               )),
@@ -655,7 +655,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             border: borderColor == colorsList[index] ?
                                               Border.all(
                                                 width: 2,
-                                                color: Color.fromARGB(255, 116, 108, 108)
+                                                color: const Color.fromARGB(255, 116, 108, 108)
                                               )
                                             : null
                                           ),
@@ -758,12 +758,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Side ${i+1}', style: TextStyle(
+                                      Text('Side ${i+1}', style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500
                                       )),
                                       IconButton(
-                                        icon: Icon(Icons.clear),
+                                        icon: const Icon(Icons.clear),
                                         onPressed: (){
                                           setState((){
                                             latitudeControllers.removeAt(i);
@@ -775,11 +775,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   TextField(
                                     controller: latitudeControllers[i],
-                                    keyboardType: TextInputType.numberWithOptions(),
+                                    keyboardType: const TextInputType.numberWithOptions(),
                                     decoration: InputDecoration(
                                       counterText: "",
                                       contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      fillColor: const Color.fromARGB(255, 143, 132, 132),
                                       filled: true,
                                       border: InputBorder.none,
                                       hintText: 'Enter latitude',
@@ -790,11 +790,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   TextField(
                                     controller: longitudeControllers[i],
-                                    keyboardType: TextInputType.numberWithOptions(),
+                                    keyboardType: const TextInputType.numberWithOptions(),
                                     decoration: InputDecoration(
                                       counterText: "",
                                       contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      fillColor: const Color.fromARGB(255, 143, 132, 132),
                                       filled: true,
                                       border: InputBorder.none,
                                       hintText: 'Enter longitude',
@@ -826,7 +826,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Select line color', style: TextStyle(
+                              const Text('Select line color', style: TextStyle(
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w500
                               )),
@@ -852,7 +852,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             border: color == colorsList[index] ?
                                               Border.all(
                                                 width: 2,
-                                                color: Color.fromARGB(255, 116, 108, 108)
+                                                color: const Color.fromARGB(255, 116, 108, 108)
                                               )
                                             : null
                                           ),
@@ -1062,7 +1062,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     TextField(
                       controller: latitudeTextController,
-                      keyboardType: TextInputType.numberWithOptions(),
+                      keyboardType: const TextInputType.numberWithOptions(),
                       onEditingComplete: (){
                         if(double.tryParse(latitudeTextController.text) != null){
                           double newLatitude = double.parse(latitudeTextController.text);
@@ -1085,7 +1085,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       decoration: InputDecoration(
                         counterText: "",
                         contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                        fillColor: Color.fromARGB(255, 143, 132, 132),
+                        fillColor: const Color.fromARGB(255, 143, 132, 132),
                         filled: true,
                         border: InputBorder.none,
                         hintText: 'Enter latitude',
@@ -1096,7 +1096,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     TextField(
                       controller: longitudeTextController,
-                      keyboardType: TextInputType.numberWithOptions(),
+                      keyboardType: const TextInputType.numberWithOptions(),
                       onEditingComplete: (){
                         if(double.tryParse(longitudeTextController.text) != null){
                           double newLongitude = double.parse(longitudeTextController.text);
@@ -1119,7 +1119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       decoration: InputDecoration(
                         counterText: "",
                         contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                        fillColor: Color.fromARGB(255, 143, 132, 132),
+                        fillColor: const Color.fromARGB(255, 143, 132, 132),
                         filled: true,
                         border: InputBorder.none,
                         hintText: 'Enter longitude',
