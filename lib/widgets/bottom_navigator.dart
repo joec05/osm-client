@@ -270,12 +270,21 @@ class BottomActionsWidgetState extends State<BottomActionsWidget> {
                                     height: getScreenHeight() * 0.015
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('Side ${i+1}', style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500
                                       )),
+                                      IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: (){
+                                          setState((){
+                                            latitudeControllers.removeAt(i);
+                                            longitudeControllers.removeAt(i);
+                                          });
+                                        },
+                                      )
                                     ],
                                   ),
                                   TextField(
@@ -466,97 +475,192 @@ class BottomActionsWidgetState extends State<BottomActionsWidget> {
     if(mounted){
       List<TextEditingController> latitudeControllers = List.generate(3, (i) => TextEditingController());
       List<TextEditingController> longitudeControllers = List.generate(3, (i) => TextEditingController());
+      Color color = Colors.black;
       showDialog(
         context: context,
         builder: (dialogContext) {
           return StatefulBuilder(
             builder: (context, setState){
-              return AlertDialog(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Add Line'),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for(int i = 0; i < latitudeControllers.length; i++)
-                      Column(
+              return Dialog(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getScreenWidth() * 0.02
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: getScreenHeight() * 0.015
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Side ${i+1}'),
-                          TextField(
-                            controller: latitudeControllers[i],
-                            decoration: InputDecoration(
-                              counterText: "",
-                              contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                              fillColor: Color.fromARGB(255, 143, 132, 132),
-                              filled: true,
-                              border: InputBorder.none,
-                              hintText: 'Enter latitude',
-                            )
+                          const Text('Add Line', style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w700
+                          )),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                              for(int i = 0; i < latitudeControllers.length; i++)
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: getScreenHeight() * 0.015
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Side ${i+1}', style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500
+                                      )),
+                                      IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: (){
+                                          setState((){
+                                            latitudeControllers.removeAt(i);
+                                            longitudeControllers.removeAt(i);
+                                          });
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                  TextField(
+                                    controller: latitudeControllers[i],
+                                    keyboardType: TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      filled: true,
+                                      border: InputBorder.none,
+                                      hintText: 'Enter latitude',
+                                    )
+                                  ),
+                                  SizedBox(
+                                    height: getScreenHeight() * 0.01
+                                  ),
+                                  TextField(
+                                    controller: longitudeControllers[i],
+                                    keyboardType: TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      filled: true,
+                                      border: InputBorder.none,
+                                      hintText: 'Enter longitude',
+                                    )
+                                  )
+                                ],
+                              ),
+                            ]
                           ),
-                          TextField(
-                            controller: longitudeControllers[i],
-                            decoration: InputDecoration(
-                              counterText: "",
-                              contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
-                              fillColor: Color.fromARGB(255, 143, 132, 132),
-                              filled: true,
-                              border: InputBorder.none,
-                              hintText: 'Enter longitude',
-                            )
-                          )
-                        ],
-                      ),
-                      CustomButton(
-                        width: getScreenWidth() * 0.6, 
-                        height: getScreenHeight() * 0.07, 
-                        buttonColor: Colors.orange, 
-                        buttonText: 'Add Side', 
-                        onTapped: (){
-                          setState((){
-                            latitudeControllers.add(TextEditingController());
-                            longitudeControllers.add(TextEditingController());
-                          });
-                        }, 
-                        setBorderRadius: true
-                      ),
-                      SizedBox(
-                        height: getScreenHeight() * 0.025
-                      ),
-                      CustomButton(
-                        width: getScreenWidth() * 0.6, 
-                        height: getScreenHeight() * 0.07, 
-                        buttonColor: Colors.orange, 
-                        buttonText: 'Add Line', 
-                        onTapped: (){
-                          bool latitudesNotEmpty = latitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
-                          bool longitudesNotEmpty = longitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
-                          if(latitudesNotEmpty && longitudesNotEmpty){
-                            globalData.lines.value = [
-                              ...globalData.lines.value,
-                              FloatingLineNotifier(
-                                ValueNotifier(
-                                  FloatingLineClass(
-                                    Colors.blueGrey,
-                                    List.generate(
-                                      latitudeControllers.length,
-                                      (i) => lat_long.LatLng(
-                                        double.parse(latitudeControllers[i].text),
-                                        double.parse(longitudeControllers[i].text)
+                          SizedBox(
+                            height: getScreenHeight() * 0.02
+                          ),
+                          CustomButton(
+                            width: getScreenWidth() * 0.6, 
+                            height: getScreenHeight() * 0.07, 
+                            buttonColor: Colors.orange, 
+                            buttonText: 'Add Side', 
+                            onTapped: (){
+                              setState((){
+                                latitudeControllers.add(TextEditingController());
+                                longitudeControllers.add(TextEditingController());
+                              });
+                            }, 
+                            setBorderRadius: true
+                          ),
+                          SizedBox(
+                            height: getScreenHeight() * 0.02
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Select line color', style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w500
+                              )),
+                              SizedBox(
+                                height: getScreenHeight() * 0.075,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: colorsList.length,
+                                  itemBuilder: (context, index){
+                                    return Container(
+                                      padding: EdgeInsets.only(
+                                        right: getScreenWidth() * 0.015
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState(() => color = colorsList[index]);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: colorsList[index],
+                                            border: color == colorsList[index] ?
+                                              Border.all(
+                                                width: 2,
+                                                color: Color.fromARGB(255, 116, 108, 108)
+                                              )
+                                            : null
+                                          ),
+                                          width: getScreenWidth() * 0.1,
+                                          height: getScreenWidth() * 0.1
+                                        ),
+                                      )
+                                    );
+                                  },
+                                )
+                              ),
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                            ]
+                          ),
+                          CustomButton(
+                            width: getScreenWidth() * 0.6, 
+                            height: getScreenHeight() * 0.07, 
+                            buttonColor: Colors.orange, 
+                            buttonText: 'Add Line', 
+                            onTapped: (){
+                              bool latitudesNotEmpty = latitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
+                              bool longitudesNotEmpty = longitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
+                              if(latitudesNotEmpty && longitudesNotEmpty){
+                                globalData.lines.value = [
+                                  ...globalData.lines.value,
+                                  FloatingLineNotifier(
+                                    ValueNotifier(
+                                      FloatingLineClass(
+                                        color,
+                                        List.generate(
+                                          latitudeControllers.length,
+                                          (i) => lat_long.LatLng(
+                                            double.parse(latitudeControllers[i].text),
+                                            double.parse(longitudeControllers[i].text)
+                                          )
+                                        )
                                       )
                                     )
                                   )
-                                )
-                              )
-                            ];
-                            Navigator.of(dialogContext).pop();
-                          }else{
-                            showSnackBar(context, 'Fields cannot be empty');
-                          }
-                        }, 
-                        setBorderRadius: true
-                      )
-                    ]
-                  ),
+                                ];
+                                Navigator.of(dialogContext).pop();
+                              }else{
+                                showSnackBar(context, 'Fields cannot be empty');
+                              }
+                            }, 
+                            setBorderRadius: true
+                          ),
+                        ]
+                      ),
+                    ),
+                  )
                 )
               );
             }

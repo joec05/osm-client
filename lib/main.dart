@@ -273,13 +273,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           onTapped: (){
                             if(textController.text.trim().isNotEmpty){
                               List<FloatingTextNotifier> texts = [...globalData.texts.value];
-                              texts[index].notifier.value.text = textController.text;
-                              texts[index].notifier.value.style = TextStyle(
-                                fontSize: fontSize,
-                                color: color,
-                                fontWeight: boldValue
+                              globalData.texts.value[index].notifier.value = FloatingTextClass(
+                                textController.text, 
+                                TextStyle(
+                                  fontSize: fontSize,
+                                  color: color,
+                                  fontWeight: boldValue
+                                ), 
+                                texts[index].notifier.value.point
                               );
-                              globalData.texts.value = [...texts];
                               Navigator.of(dialogContext).pop();
                             }else{
                               showSnackBar(context, 'Text cannot be empty');
@@ -443,9 +445,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           onTapped: (){
                             if(double.tryParse(radiusController.text) != null){
                               List<FloatingCircleNotifier> circles = [...globalData.circles.value];
-                              circles[index].notifier.value.radius = double.parse(radiusController.text);
-                              circles[index].notifier.value.color = fillColor;
-                              circles[index].notifier.value.borderColor = borderColor;
+                              globalData.circles.value[index].notifier.value = FloatingCircleClass(
+                                double.parse(radiusController.text),
+                                fillColor, 
+                                borderColor, 
+                                circles[index].notifier.value.point
+                              );
                               Navigator.of(dialogContext).pop();
                             }else{
                               showSnackBar(context, 'Invalid value');
@@ -468,6 +473,441 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
   
+  void editPolygonDialog(int index, FloatingPolygonNotifier data){
+    if(mounted){
+      List<TextEditingController> latitudeControllers = data.notifier.value.points.map((e) => TextEditingController(
+        text: e.latitude.toString()
+      )).toList();
+      List<TextEditingController> longitudeControllers = data.notifier.value.points.map((e) => TextEditingController(
+        text: e.longitude.toString()
+      )).toList();
+      Color borderColor = data.notifier.value.borderColor;
+      Color color = data.notifier.value.color;
+      showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (context, setState){
+              return Dialog(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getScreenWidth() * 0.02
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: getScreenHeight() * 0.015
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Add Polygon', style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w700
+                          )),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                              for(int i = 0; i < latitudeControllers.length; i++)
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: getScreenHeight() * 0.015
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Side ${i+1}', style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500
+                                      )),
+                                      IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: (){
+                                          setState((){
+                                            latitudeControllers.removeAt(i);
+                                            longitudeControllers.removeAt(i);
+                                          });
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                  TextField(
+                                    controller: latitudeControllers[i],
+                                    keyboardType: TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      filled: true,
+                                      border: InputBorder.none,
+                                      hintText: 'Enter latitude',
+                                    )
+                                  ),
+                                  SizedBox(
+                                    height: getScreenHeight() * 0.01
+                                  ),
+                                  TextField(
+                                    controller: longitudeControllers[i],
+                                    keyboardType: TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      filled: true,
+                                      border: InputBorder.none,
+                                      hintText: 'Enter longitude',
+                                    )
+                                  )
+                                ],
+                              ),
+                            ]
+                          ),
+                          SizedBox(
+                            height: getScreenHeight() * 0.02
+                          ),
+                          CustomButton(
+                            width: getScreenWidth() * 0.6, 
+                            height: getScreenHeight() * 0.07, 
+                            buttonColor: Colors.orange, 
+                            buttonText: 'Add Side', 
+                            onTapped: (){
+                              setState((){
+                                latitudeControllers.add(TextEditingController());
+                                longitudeControllers.add(TextEditingController());
+                              });
+                            }, 
+                            setBorderRadius: true
+                          ),
+                          SizedBox(
+                            height: getScreenHeight() * 0.02
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Select polygon color', style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w500
+                              )),
+                              SizedBox(
+                                height: getScreenHeight() * 0.075,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: colorsList.length,
+                                  itemBuilder: (context, index){
+                                    return Container(
+                                      padding: EdgeInsets.only(
+                                        right: getScreenWidth() * 0.015
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState(() => color = colorsList[index]);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: colorsList[index],
+                                            border: color == colorsList[index] ?
+                                              Border.all(
+                                                width: 2,
+                                                color: Color.fromARGB(255, 116, 108, 108)
+                                              )
+                                            : null
+                                          ),
+                                          width: getScreenWidth() * 0.1,
+                                          height: getScreenWidth() * 0.1
+                                        ),
+                                      )
+                                    );
+                                  },
+                                )
+                              ),
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                              Text('Select polygon border color', style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w500
+                              )),
+                              SizedBox(
+                                height: getScreenHeight() * 0.075,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: colorsList.length,
+                                  itemBuilder: (context, index){
+                                    return Container(
+                                      padding: EdgeInsets.only(
+                                        right: getScreenWidth() * 0.015
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState(() => borderColor = colorsList[index]);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: colorsList[index],
+                                            border: borderColor == colorsList[index] ?
+                                              Border.all(
+                                                width: 2,
+                                                color: Color.fromARGB(255, 116, 108, 108)
+                                              )
+                                            : null
+                                          ),
+                                          width: getScreenWidth() * 0.1,
+                                          height: getScreenWidth() * 0.1
+                                        ),
+                                      )
+                                    );
+                                  },
+                                )
+                              ),
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                            ]
+                          ),
+                          CustomButton(
+                            width: getScreenWidth() * 0.6, 
+                            height: getScreenHeight() * 0.07, 
+                            buttonColor: Colors.orange, 
+                            buttonText: 'Add Polygon', 
+                            onTapped: (){
+                              bool latitudesNotEmpty = latitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
+                              bool longitudesNotEmpty = longitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
+                              if(latitudesNotEmpty && longitudesNotEmpty){
+                                globalData.polygons.value[index].notifier.value = FloatingPolygonClass(
+                                  borderColor,
+                                  color,
+                                  List.generate(
+                                    latitudeControllers.length,
+                                    (i) => lat_long.LatLng(
+                                      double.parse(latitudeControllers[i].text),
+                                      double.parse(longitudeControllers[i].text)
+                                    )
+                                  )
+                                );
+                                Navigator.of(dialogContext).pop();
+                              }else{
+                                showSnackBar(context, 'Fields cannot be empty');
+                              }
+                            }, 
+                            setBorderRadius: true
+                          ),
+                        ]
+                      ),
+                    ),
+                  )
+                )
+              );
+            }
+          );
+        }
+      );
+    }
+  }
+
+  void editLineDialog(int index, FloatingLineNotifier data){
+    if(mounted){
+      List<TextEditingController> latitudeControllers = data.notifier.value.points.map((e) => TextEditingController(
+        text: e.latitude.toString()
+      )).toList();
+      List<TextEditingController> longitudeControllers = data.notifier.value.points.map((e) => TextEditingController(
+        text: e.longitude.toString()
+      )).toList();
+      Color color = data.notifier.value.color;
+      showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (context, setState){
+              return Dialog(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: getScreenWidth() * 0.02
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: getScreenHeight() * 0.015
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Add Line', style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w700
+                          )),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                              for(int i = 0; i < latitudeControllers.length; i++)
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: getScreenHeight() * 0.015
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Side ${i+1}', style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500
+                                      )),
+                                      IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: (){
+                                          setState((){
+                                            latitudeControllers.removeAt(i);
+                                            longitudeControllers.removeAt(i);
+                                          });
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                  TextField(
+                                    controller: latitudeControllers[i],
+                                    keyboardType: TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      filled: true,
+                                      border: InputBorder.none,
+                                      hintText: 'Enter latitude',
+                                    )
+                                  ),
+                                  SizedBox(
+                                    height: getScreenHeight() * 0.01
+                                  ),
+                                  TextField(
+                                    controller: longitudeControllers[i],
+                                    keyboardType: TextInputType.numberWithOptions(),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+                                      fillColor: Color.fromARGB(255, 143, 132, 132),
+                                      filled: true,
+                                      border: InputBorder.none,
+                                      hintText: 'Enter longitude',
+                                    )
+                                  )
+                                ],
+                              ),
+                            ]
+                          ),
+                          SizedBox(
+                            height: getScreenHeight() * 0.02
+                          ),
+                          CustomButton(
+                            width: getScreenWidth() * 0.6, 
+                            height: getScreenHeight() * 0.07, 
+                            buttonColor: Colors.orange, 
+                            buttonText: 'Add Side', 
+                            onTapped: (){
+                              setState((){
+                                latitudeControllers.add(TextEditingController());
+                                longitudeControllers.add(TextEditingController());
+                              });
+                            }, 
+                            setBorderRadius: true
+                          ),
+                          SizedBox(
+                            height: getScreenHeight() * 0.02
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Select line color', style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w500
+                              )),
+                              SizedBox(
+                                height: getScreenHeight() * 0.075,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: colorsList.length,
+                                  itemBuilder: (context, index){
+                                    return Container(
+                                      padding: EdgeInsets.only(
+                                        right: getScreenWidth() * 0.015
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState(() => color = colorsList[index]);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: colorsList[index],
+                                            border: color == colorsList[index] ?
+                                              Border.all(
+                                                width: 2,
+                                                color: Color.fromARGB(255, 116, 108, 108)
+                                              )
+                                            : null
+                                          ),
+                                          width: getScreenWidth() * 0.1,
+                                          height: getScreenWidth() * 0.1
+                                        ),
+                                      )
+                                    );
+                                  },
+                                )
+                              ),
+                              SizedBox(
+                                height: getScreenHeight() * 0.02
+                              ),
+                            ]
+                          ),
+                          CustomButton(
+                            width: getScreenWidth() * 0.6, 
+                            height: getScreenHeight() * 0.07, 
+                            buttonColor: Colors.orange, 
+                            buttonText: 'Add Line', 
+                            onTapped: (){
+                              bool latitudesNotEmpty = latitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
+                              bool longitudesNotEmpty = longitudeControllers.where((e) => e.text.trim().isNotEmpty).toList().isNotEmpty;
+                              if(latitudesNotEmpty && longitudesNotEmpty){
+                                globalData.lines.value[index].notifier.value = FloatingLineClass(
+                                  color,
+                                  List.generate(
+                                    latitudeControllers.length,
+                                    (i) => lat_long.LatLng(
+                                      double.parse(latitudeControllers[i].text),
+                                      double.parse(longitudeControllers[i].text)
+                                    )
+                                  )
+                                );
+                                Navigator.of(dialogContext).pop();
+                              }else{
+                                showSnackBar(context, 'Fields cannot be empty');
+                              }
+                            }, 
+                            setBorderRadius: true
+                          ),
+                        ]
+                      ),
+                    ),
+                  )
+                )
+              );
+            }
+          );
+        }
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print(globalData.latitude);
@@ -504,6 +944,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       markers: [
                         for(int i = 0; i < textsList.length; i++)
                         Marker(
+                          key: UniqueKey(),
                           point: lat_long.LatLng(
                             textsList[i].notifier.value.point.latitude, 
                             textsList[i].notifier.value.point.longitude
@@ -516,12 +957,17 @@ class _MyHomePageState extends State<MyHomePage> {
                             textsList[i].notifier.value.text, 
                             textsList[i].notifier.value.style
                           ).height,
-                          child: GestureDetector(
-                            onTap: () => editTextDialog(i, textsList[i]),
-                            child: Text(
-                              textsList[i].notifier.value.text,
-                              style: textsList[i].notifier.value.style
-                            ),
+                          child: ValueListenableBuilder(
+                            valueListenable: textsList[i].notifier,
+                            builder: (context, textData, child){
+                              return GestureDetector(
+                                onTap: () => editTextDialog(i, textsList[i]),
+                                child: Text(
+                                  textData.text,
+                                  style: textData.style
+                                ),
+                              );
+                            }
                           )
                         ),
                       ]
